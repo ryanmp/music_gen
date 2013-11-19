@@ -1,4 +1,4 @@
-import numpy, math, random, pprint
+import numpy, math
 
 '''
 At this point I really need to SPEED UP the montecarlo function,
@@ -20,17 +20,6 @@ help much anymore, but it's still worth working on for now.
 num_notes = 56 # e.g. a,b,c
 markov_order = 2 
 length_of_song = 1146 
-
-#pass in 'FILE.CSV' formatted via midicsv (midi to csv)
-#returns a list
-def csv2list(_csvmidifile):
-	data = open(_csvmidifile).read()
-	dl = [line.split(',') for line in data.split('\n')]
-	dl2 = []
-	for i in xrange(0,len(dl)-1):
-		if ((dl[i][2] == ' Note_on_c') and (dl[i][5] != ' 0')):
-			dl2.append(int(dl[i][4]))
-	return dl2
 
 def new_markov(_song, _order, _num_notes):
 	#instantiate ND array
@@ -72,26 +61,23 @@ def idx_convert(input, _order, _num_notes):
 		t[i] = input/(m**(_order-1-i))%num_notes
 	return t
 
-
 #gen random "song"
 #song = [random.randrange(0,num_notes) for x in xrange(0,length_of_song)]
 #counts = new_markov(song,markov_order,num_notes) 
 #print(counts)
-
+'''
 print ('generating markov...')
 song2 = csv2list('test.csv')
 num_notes2 = max(song2)+1
-counts2 = new_markov(song2,4,num_notes2) 
+counts2 = new_markov(song2,4,num_notes2) '''
 #print(counts2)
-
-
 
 #get first N notes
 # note, we will need a variation of this function for continuing the chain,
 # since for the rest of it, N-1 notes should be used as the input, which will
 # reduce our input for the weight foo greatly
-
+'''
 print ('montecarlo simulation...')
 out_idx =  weighted_idx(counts2.flatten())
 out_idx2 = idx_convert(out_idx,4,num_notes2)
-print(out_idx2)
+print(out_idx2)'''
