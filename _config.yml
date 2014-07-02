@@ -11,3 +11,5 @@ github_username:  ryanmp
 # Build settings
 markdown: kramdown
 permalink: pretty
+
+exclude: [SRC, SRC_OLD]
