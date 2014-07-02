@@ -3,7 +3,7 @@ title: music_gen DevBlog
 name: Ryan Phillips
 email: wordsandcolor@gmail.com
 description: "Chronicling one coder's attempt at creating music generation software."
-baseurl: /jblog
+baseurl: /devlog
 url: "http://www.rmkp.me"
 twitter_username: RyanMarkP
 github_username:  ryanmp
