@@ -240,7 +240,7 @@ def Play_Song(song):
 	fluidsynth.play_Tracks(c.tracks, [0 for i in xrange(len(c.tracks))])
 
 
-def Save_Song(song):
+def Save_Song(song,dt):
 	c = Composition()
 
 	instrument = MidiInstrument()
@@ -256,13 +256,17 @@ def Save_Song(song):
 	c.add_track(t1)
 	c.add_track(t2)
 
-	file_name = ""
 	file_dir = "midi_archive/"
-	dt = datetime.datetime.now()
-	file_name = file_dir + 'song_' + dt.isoformat() + '.midi'
+	midi_file_name = file_dir + 'song_' + dt.strftime("%Y%m%dT%H%M%SMS%f") + '.midi'
+	MidiFileOut.write_Composition(midi_file_name,c)
 
-	MidiFileOut.write_Composition(file_name,c)
+	# also saving as an mp3 (using a os lib called timidity)?
+	file_dir = "/mp3_archive/"
+	mp3_file_name = file_dir + 'song_' + dt.strftime("%Y%m%dT%H%M%SMS%f") + '.mp3'
+	os.system('timidity -Ow -o - ./' + midi_file_name + ' | lame - ./' + mp3_file_name)
 
+
+	
 
 '''
 
@@ -271,10 +275,17 @@ What follows is a sample of what we can do with these functions....
 
 '''
 
-song = Gen_Song('C#')
 
-Save_Song(song)
+
+song_key_sig = random.choice(diatonic.basic_keys)
+song = Gen_Song(song_key_sig)
+
+time_stamp = datetime.datetime.now()
+
+Save_Song(song,time_stamp)
 Play_Song(song)
+
+
 
 
 
