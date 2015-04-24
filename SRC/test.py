@@ -41,11 +41,7 @@ info:
 
 todo:
 
-	- after generating a song: i'm currently playing it and saving a midi copy
-	  but when i try fluidsythn midi -> wav... it doesn't work
-	  is this a problem with a bad header for the midifile, or with fluidsynth?
-	  it would be nice to be able to generate midi->wav->mp3 files on the fly for better
-	  sharability
+	- create viz of song for additional feedback purposes
 
 	- micro-structure... i.e. partA in structure, broke up into:
 	  very simple: (aaaa, abab, abcb, aaab, abba, aabc, abbb, abcc, abbc)...
@@ -158,7 +154,7 @@ def keyed_progression_to_bars(progression, num_bars, key_sig):
 		for j in xrange(chord_lengths[i]):
 			k += 1
 
-			vel = random.randint(55,110)
+			vel = random.randint(50,75)
 			this_chord = []
 			for note in progression[k]:
 				temp_note = Note(note,3)
@@ -188,6 +184,8 @@ def Gen_Section(key, num_bars):
 # generates large scale song structure (e.g. verse, chorus1, verse2, chorus)
 # returns a choice as an array -> interpretted by Gen_Song
 def Gen_Song_Structure():
+
+	# macro structure (verse, chorus, bridge, etc.)
 	l = []
 	l.append ([0,1,0,1,0])
 	l.append ([0,1,2,1,0])
@@ -198,7 +196,48 @@ def Gen_Song_Structure():
 	l.append ([0,1,2,0,2])
 	l.append ([0,1,2,0,1,2])
 	l.append ([0,1,2,0,1,2,1])
-	return random.choice(l)
+
+	'''
+	 	micro structure (i.e. a verse may contain the same chord progression ) 
+	 	repeated a couple of times, or we may have a two part chorus, etc.
+
+		(aaaa, abab, abcb, aaab, abba, aabc, abbb, abcc, abbc)
+
+	'''
+	m = []
+	m.append([1,1])
+	m.append([1,1,1])
+	m.append([1,1,1,1])
+	m.append([1,2,1,2])
+	m.append([1,1,1,2])
+	m.append([1,2,3,2])
+	m.append([1,2,2,1])
+	m.append([1,2,2,2])
+	m.append([1,2,2,3])
+
+
+	# pick a macro structure
+	this_l = random.choice(l)
+
+	m_flat = [element for sub in m for element in sub]
+	mult = len(set(this_l))*len(set(m_flat)) # multiplication factor
+
+	# generate all the m_parts we need
+	m_parts = []
+	for i in xrange(len(set(this_l))):
+		uniq = [x*(i+1)*mult for x in random.choice(m)]
+		m_parts.append(uniq)
+
+	# creating final song structure (with micro structure)
+	ret = []
+	for i in this_l:
+		ret.append(m_parts[i])
+
+
+	print ret
+
+	#return random.choice(l)
+	return [element for sub in ret for element in sub] #flatten
 
 
 def Gen_Song(key):
@@ -206,16 +245,29 @@ def Gen_Song(key):
 
 	print 'structure', structure
 
-	parts = []
-	for i in xrange(len(set(structure))):
+	# how many kinds of parts will we need?
+	parts = {}
+	for i in set(structure):
 		part = Gen_Section(key,2) # should randomize number of bars too...
-		parts.append(part)
+		parts[i] = part
 
 	song = []
 	for i in structure:
 		song.append( parts[i] )
 
 	return song
+
+
+
+def Viz_Song(song):
+
+	for part in song:
+			for i in part[0]:
+				print 'p0 bar' + i
+			for i in part[1]:
+				print 'p1 bar' + i
+
+	print "TBI"
 
 
 def Play_Song(song):
@@ -260,10 +312,12 @@ def Save_Song(song,dt):
 	midi_file_name = file_dir + 'song_' + dt.strftime("%Y%m%dT%H%M%SMS%f") + '.midi'
 	MidiFileOut.write_Composition(midi_file_name,c)
 
-	# also saving as an mp3 (using a os lib called timidity)?
+	# also saving as a wav -> mp3 (using os libs timidity & sox)
 	file_dir = "/mp3_archive/"
 	mp3_file_name = file_dir + 'song_' + dt.strftime("%Y%m%dT%H%M%SMS%f") + '.mp3'
 	os.system('timidity -Ow -o - ./' + midi_file_name + ' | lame - ./' + mp3_file_name)
+	#os.system('timidity -Ow -o - ./' + midi_file_name + ' | sox --norm - ./' + mp3_file_name)
+
 
 
 	
@@ -281,9 +335,8 @@ song_key_sig = random.choice(diatonic.basic_keys)
 song = Gen_Song(song_key_sig)
 
 time_stamp = datetime.datetime.now()
-
 Save_Song(song,time_stamp)
-Play_Song(song)
+#Play_Song(song)
 
 
 
