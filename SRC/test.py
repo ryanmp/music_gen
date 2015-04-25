@@ -316,8 +316,18 @@ def Save_Song(song,dt):
 	file_dir = "/mp3_archive/"
 	mp3_file_name = file_dir + 'song_' + dt.strftime("%Y%m%dT%H%M%SMS%f") + '.mp3'
 	os.system('timidity -Ow -o - ./' + midi_file_name + ' | lame - ./' + mp3_file_name)
+
+	# a better option if possible.. (has normalization)
 	#os.system('timidity -Ow -o - ./' + midi_file_name + ' | sox --norm - ./' + mp3_file_name)
 
+
+	# save a basic image-viz for each song
+	file_dir = "img_archive/"
+	img_file_name = file_dir + 'song_' + dt.strftime("%Y%m%dT%H%M%SMS%f") + '.png'
+	os.system('node ./njs_music_viz/main.js ' + midi_file_name + ' ' + img_file_name)
+
+
+	
 
 
 	
