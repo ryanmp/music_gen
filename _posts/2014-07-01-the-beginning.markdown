@@ -69,8 +69,7 @@ And that's it! After the song generator runs all of the other generators, the pr
 
 So here are a few examples of what this currently sounds like (listed by the seed given to the random number generator):
 
-+ [1234](1234.mp3)
-+ [5656](1234.mp3)
++ [1234](test.ogg)
 
 Thanks for reading! Check back again later if you want to read about (or listen to) my progress. 
  
